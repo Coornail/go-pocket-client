@@ -13,6 +13,8 @@ import (
 	"github.com/motemen/go-pocket/auth"
 )
 
+const configDir = "/tmp"
+
 func GetClient() (*api.Client, error) {
 	accessToken, err := restoreAccessToken(consumerKey)
 	if err != nil {
