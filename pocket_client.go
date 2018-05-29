@@ -13,8 +13,6 @@ import (
 	"github.com/motemen/go-pocket/auth"
 )
 
-const configDir = "/tmp"
-
 func GetClient() (*api.Client, error) {
 	accessToken, err := restoreAccessToken(consumerKey)
 	if err != nil {
@@ -57,7 +55,7 @@ func obtainAccessToken(consumerKey string) (*auth.Authorization, error) {
 
 func restoreAccessToken(consumerKey string) (*auth.Authorization, error) {
 	accessToken := &auth.Authorization{}
-	authFile := filepath.Join(configDir, "auth.json")
+	authFile := filepath.Join(os.TempDir(), "getpocket.json")
 
 	err := loadJSONFromFile(authFile, accessToken)
 
