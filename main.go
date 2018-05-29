@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"os"
 	"regexp"
 
 	"github.com/motemen/go-pocket/api"
@@ -32,17 +33,19 @@ func main() {
 		print(clearScreen)
 		fmt.Printf("[%d\t/\t%d] Downloading article: %s", i, len(res.List), item.Title())
 
-		article := Article{Item: item}
-		res, err := article.Download()
-		if err != nil {
-			fmt.Errorf("Error downloading article: %s\n", err.Error())
-			continue
-		}
-
 		fileName := outputDir + "/" + cleanFileName(item.Title()) + ".html"
-		if err := ioutil.WriteFile(fileName, res, 0644); err != nil {
-			fmt.Errorf("Error writing to file: %s\n", err.Error())
-			continue
+		if _, err := os.Stat(fileName); os.IsNotExist(err) {
+			article := Article{Item: item}
+			res, err := article.Download()
+			if err != nil {
+				fmt.Errorf("Error downloading article: %s\n", err.Error())
+				continue
+			}
+
+			if err := ioutil.WriteFile(fileName, res, 0644); err != nil {
+				fmt.Errorf("Error writing to file: %s\n", err.Error())
+				continue
+			}
 		}
 	}
 }
