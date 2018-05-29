@@ -21,10 +21,10 @@ type Article struct {
 	api.Item
 }
 
-func (a Article) String() string {
+func (a Article) Download() ([]byte, error) {
 	r, err := a.getReadability()
 	if err != nil {
-		panic(err)
+		return []byte{}, err
 	}
 
 	t := template.Must(template.New("article").Parse(templ))
@@ -35,7 +35,7 @@ func (a Article) String() string {
 		"Title": a.Title(),
 	})
 
-	return buf.String()
+	return buf.Bytes(), nil
 }
 
 func (a Article) getReadability() (readability.Document, error) {
