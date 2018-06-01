@@ -61,6 +61,13 @@ func main() {
 		panic(err)
 	}
 
+	// Create download directory if it doesn't exist.
+	if _, err := os.Stat(outputDir); os.IsNotExist(err) {
+		if err = os.MkdirAll(outputDir, 0744); err != nil {
+			panic(err)
+		}
+	}
+
 	i := 0
 	for _, item := range res.List {
 		i++
