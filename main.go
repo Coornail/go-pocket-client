@@ -7,6 +7,7 @@ import (
 	"os"
 	"regexp"
 
+	"github.com/gosuri/uiprogress"
 	"github.com/motemen/go-pocket/api"
 )
 
@@ -72,13 +73,30 @@ func main() {
 		}
 	}
 
-	i := 0
-	for _, item := range res.List {
-		i++
-		print(clearScreen)
-		fmt.Printf("[%d\t/\t%d] Downloading article: %s", i, len(res.List), item.Title())
+	uiprogress.Start()
+	bar := uiprogress.AddBar(len(res.List))
+	bar.AppendCompleted()
 
-		fileName := outputDir + "/" + cleanFileName(item.Title()) + ".html"
+	// Append the currently processed title
+	var title string
+	var maxTitleLength int
+	bar.AppendFunc(func(b *uiprogress.Bar) string {
+		res := fmt.Sprintf("[%d\t/%d] %s", bar.Current(), len(res.List), title)
+		for i := 0; i < maxTitleLength-len(title); i++ {
+			res += " "
+		}
+		return res
+	})
+
+	for _, item := range res.List {
+		bar.Incr()
+		// We have to keep count of the max length of the title as we have to manually clear the line after \r.
+		title = item.Title()
+		if len(title) > maxTitleLength {
+			maxTitleLength = len(title)
+		}
+
+		fileName := outputDir + "/" + cleanFileName(title) + ".html"
 		if _, err := os.Stat(fileName); os.IsNotExist(err) || force {
 			article := Article{Item: item}
 			res, err := article.Download()
