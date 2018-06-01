@@ -101,12 +101,12 @@ func main() {
 			article := Article{Item: item}
 			res, err := article.Download()
 			if err != nil {
-				fmt.Errorf("Error downloading article: %s\n", err.Error())
+				fmt.Printf("Error downloading article: %s\n\n", err.Error())
 				continue
 			}
 
 			if err := ioutil.WriteFile(fileName, res, 0644); err != nil {
-				fmt.Errorf("Error writing to file: %s\n", err.Error())
+				fmt.Printf("Error writing to file: %s\n\n", err.Error())
 				continue
 			}
 		}
