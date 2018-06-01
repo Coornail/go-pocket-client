@@ -25,6 +25,8 @@ var (
 	tag       string
 	search    string
 	force     bool
+
+	consumerKey string
 )
 
 // @TODO set consumer key
@@ -39,9 +41,11 @@ func init() {
 	flag.Parse()
 
 	if state != string(api.StateUnread) && state != string(api.StateAll) && state != string(api.StateArchive) {
-		fmt.Printf("State should be: %s, %s or %s\n", string(api.StateUnread), string(api.StateAll), string(api.StateUnread))
+		fmt.Printf("State should be: %s, %s or %s\n", string(api.StateUnread), string(api.StateAll), string(api.StateArchive))
 		os.Exit(1)
 	}
+
+	consumerKey = os.Getenv("POCKET_CONSUMER_KEY")
 }
 
 func main() {
