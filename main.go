@@ -19,8 +19,6 @@ TODO:
 - [ ] Set creation time to the added time
 */
 
-const clearScreen = "\033[H\033[2J"
-
 // Flags
 var (
 	state       string
