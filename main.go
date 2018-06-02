@@ -4,9 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"log"
-	"net/http"
-	_ "net/http/pprof"
 	"os"
 	"regexp"
 
@@ -51,10 +48,6 @@ func init() {
 }
 
 func main() {
-	go func() {
-		log.Println(http.ListenAndServe("localhost:6060", nil))
-	}()
-
 	client, err := GetClient()
 	if err != nil {
 		panic(err)
