@@ -42,7 +42,7 @@ func init() {
 	flag.StringVar(&domain, "domain", "", "Domain to limit the archiving to")
 	flag.StringVar(&search, "search", "", "Search to limit the archiving to")
 	flag.StringVar(&tag, "tag", "", "Tag to limit the archiving to")
-	flag.BoolVar(&force, "force", false, "Download already downloaded articles")
+	flag.BoolVar(&force, "force", false, "Redownload already downloaded articles")
 	flag.IntVar(&parallelism, "parallelism", 8, "Number of threads to download the articles")
 	flag.Parse()
 
