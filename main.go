@@ -34,8 +34,6 @@ var (
 	consumerKey string
 )
 
-// @TODO set consumer key
-
 func init() {
 	flag.StringVar(&state, "state", string(api.StateUnread), "Type of article to download")
 	flag.StringVar(&outputDir, "outputDir", "./articles", "Directory to download the articles to")
