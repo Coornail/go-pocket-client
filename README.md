@@ -32,4 +32,4 @@ Usage of ./go-pocket-client:
 ```
 
 # License
-[MIT](https://raw.githubusercontent.com/Coornail/vim-go-conceal/master/LICENSE)
+[MIT](https://github.com/Coornail/go-pocket-client/blob/master/LICENSE)
