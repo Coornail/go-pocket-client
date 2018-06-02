@@ -114,6 +114,7 @@ func main() {
 	// Write results to file.
 	for range res.List {
 		res := <-results
+		bar.Incr()
 
 		if res.alreadyDownloaded {
 			fmt.Printf("Skipping %s\n\n", res.input.Title())
@@ -130,7 +131,6 @@ func main() {
 			fmt.Printf("Error writing to file: %s\n\n", err.Error())
 			continue
 		}
-		bar.Incr()
 	}
 
 }
