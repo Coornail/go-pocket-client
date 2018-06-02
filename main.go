@@ -165,13 +165,13 @@ func worker(jobs <-chan work, results chan<- work) {
 	}
 }
 
-var fileNameCharacters = regexp.MustCompile(`(?m)[^\w]`)
+var nonFileNameCharacters = regexp.MustCompile(`(?m)[^\w]`)
 var multipleDashes = regexp.MustCompile(`[-]+`)
 var trailingDash = regexp.MustCompile(`-$`)
 
 func cleanFileName(in string) string {
 	// All non-filename characters to dashes.
-	res := fileNameCharacters.ReplaceAll([]byte(in), []byte("-"))
+	res := nonFileNameCharacters.ReplaceAll([]byte(in), []byte("-"))
 
 	// Multiple dashes to single dash.
 	res = multipleDashes.ReplaceAll(res, []byte("-"))
