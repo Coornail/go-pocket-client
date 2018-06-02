@@ -30,3 +30,6 @@ Usage of ./go-pocket-client:
   -tag string
         Tag to limit the archiving to
 ```
+
+# License
+[MIT](https://raw.githubusercontent.com/Coornail/vim-go-conceal/master/LICENSE)
