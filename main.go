@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 	"regexp"
 
@@ -127,7 +127,13 @@ func main() {
 			continue
 		}
 
-		if err := ioutil.WriteFile(res.outputFileName, res.output, 0644); err != nil {
+		f, err := os.Create(res.outputFileName)
+		if err != nil {
+			fmt.Printf("Error creating file: %s\n\n", err.Error())
+			continue
+		}
+
+		if _, err := io.Copy(f, res.output); err != nil {
 			fmt.Printf("Error writing to file: %s\n\n", err.Error())
 			continue
 		}
@@ -139,7 +145,7 @@ func main() {
 type work struct {
 	input             api.Item
 	err               error
-	output            []byte
+	output            io.Reader
 	alreadyDownloaded bool
 	outputFileName    string
 }
@@ -168,6 +174,8 @@ func worker(jobs <-chan work, results chan<- work) {
 var nonFileNameCharacters = regexp.MustCompile(`(?m)[^\w]`)
 var multipleDashes = regexp.MustCompile(`[-]+`)
 var trailingDash = regexp.MustCompile(`-$`)
+
+// @TODO remove leading slash
 
 func cleanFileName(in string) string {
 	// All non-filename characters to dashes.

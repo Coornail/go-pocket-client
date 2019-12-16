@@ -1,8 +1,9 @@
 package main
 
 import (
-	"bytes"
 	"html/template"
+	"io"
+	"net/http"
 	"time"
 
 	readability "github.com/RadhiFadlillah/go-readability"
@@ -17,7 +18,6 @@ const templ = `
 <head>
   <title>{{.Title}}</title>
   <meta charset="UTF-8">
-  <meta name="author" content="{{.Author}}">
   <link rel="canonical" href="{{.URL}}" />
 </head>
 <body>
@@ -25,30 +25,44 @@ const templ = `
   {{ if ne .Image "" }}
     <img src="{{.Image}}" />
   {{ end }}
-  {{.Body }}
+  {{.Body}}
 </body>
 `
+
+var t *template.Template
+
+func init() {
+	t = template.Must(template.New("article").Parse(templ))
+}
 
 type Article struct {
 	api.Item
 }
 
-func (a Article) Download() ([]byte, error) {
-	article, err := readability.Parse(a.URL(), timeOut)
+func (a Article) Download() (io.Reader, error) {
+	r, w := io.Pipe()
+
+	resp, err := http.Get(a.URL())
 	if err != nil {
-		return []byte{}, err
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	parser := readability.NewParser()
+	article, err := parser.Parse(resp.Body, a.URL())
+	if err != nil {
+		return nil, err
 	}
 
-	t := template.Must(template.New("article").Parse(templ))
+	go func() {
+		t.Execute(w, map[string]interface{}{
+			"Body":  template.HTML(article.Content),
+			"Url":   a.URL(),
+			"Title": a.Title(),
+			"Image": article.Image,
+		})
+		w.Close()
+	}()
 
-	var buf bytes.Buffer
-	err = t.Execute(&buf, map[string]interface{}{
-		"Body":   template.HTML(article.RawContent),
-		"Url":    a.URL(),
-		"Title":  a.Title(),
-		"Image":  article.Meta.Image,
-		"Author": article.Meta.Author,
-	})
-
-	return buf.Bytes(), err
+	return r, err
 }
