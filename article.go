@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	readability "github.com/RadhiFadlillah/go-readability"
+	readability "github.com/go-shiori/go-readability"
 	"github.com/motemen/go-pocket/api"
 )
 
