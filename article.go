@@ -1,6 +1,7 @@
 package main
 
 import (
+	"crypto/tls"
 	"html/template"
 	"io"
 	"net/http"
@@ -40,6 +41,9 @@ type Article struct {
 }
 
 func (a Article) Download() (io.Reader, error) {
+	// Bypass x509 error for downloading articles
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
+
 	r, w := io.Pipe()
 
 	resp, err := http.Get(a.URL())
